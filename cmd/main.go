@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/redis/go-redis/v9"
 	"github/michaelwp/gobin/api"
 	"github/michaelwp/gobin/configs"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
+	"github.com/redis/go-redis/v9"
 )
 
 func init() {
