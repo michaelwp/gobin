@@ -10,11 +10,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// AddRequest represents the request body for adding new content
+// @Description Request body for adding new content
 type AddRequest struct {
 	Content string `json:"content"`
 	Expires string `json:"expires"`
 }
 
+// Response represents the standard API response
+// @Description Standard API response structure
 type Response struct {
 	Status  string      `json:"status"`
 	Message string      `json:"message"`
@@ -37,6 +41,14 @@ func NewController(redisModel model.RedisModel) Controller {
 	}
 }
 
+// HealthCheck godoc
+// @Summary Health check
+// @Description Check if the API is running and healthy
+// @Tags health
+// @Accept json
+// @Produce json
+// @Success 200 {object} Response
+// @Router /healthcheck [get]
 func (r controller) HealthCheck(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(Response{
 		Status:  "success",
@@ -44,6 +56,17 @@ func (r controller) HealthCheck(c *fiber.Ctx) error {
 	})
 }
 
+// AddNewContent godoc
+// @Summary Add new content
+// @Description Create a new paste with the provided content and expiration date
+// @Tags paste
+// @Accept json
+// @Produce json
+// @Param request body AddRequest true "Content to add"
+// @Success 200 {object} Response
+// @Failure 400 {object} Response
+// @Failure 500 {object} Response
+// @Router /v1/add [post]
 func (r controller) AddNewContent(c *fiber.Ctx) error {
 	request := new(AddRequest)
 	if err := c.BodyParser(request); err != nil {
@@ -96,6 +119,17 @@ func (r controller) AddNewContent(c *fiber.Ctx) error {
 	})
 }
 
+// GetContent godoc
+// @Summary Get content
+// @Description Retrieve content by its unique key
+// @Tags paste
+// @Accept json
+// @Produce json
+// @Param key path string true "Content key"
+// @Success 200 {object} Response
+// @Failure 404 {object} Response
+// @Failure 500 {object} Response
+// @Router /{key} [get]
 func (r controller) GetContent(c *fiber.Ctx) error {
 	log.Println("key:", c.Params("key"))
 

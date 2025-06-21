@@ -1,0 +1,111 @@
+basePath: /
+definitions:
+  api.AddRequest:
+    description: Request body for adding new content
+    properties:
+      content:
+        type: string
+      expires:
+        type: string
+    type: object
+  api.Response:
+    description: Standard API response structure
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A simple pastebin application API for sharing text and code snippets
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Gobin API
+  version: "1.0"
+paths:
+  /{key}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve content by its unique key
+      parameters:
+      - description: Content key
+        in: path
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Get content
+      tags:
+      - paste
+  /healthcheck:
+    get:
+      consumes:
+      - application/json
+      description: Check if the API is running and healthy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Health check
+      tags:
+      - health
+  /v1/add:
+    post:
+      consumes:
+      - application/json
+      description: Create a new paste with the provided content and expiration date
+      parameters:
+      - description: Content to add
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.AddRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Add new content
+      tags:
+      - paste
+schemes:
+- http
+- https
+swagger: "2.0"

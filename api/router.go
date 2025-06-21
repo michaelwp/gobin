@@ -3,7 +3,10 @@ package api
 import (
 	"github/michaelwp/gobin/model"
 
+	_ "github/michaelwp/gobin/docs"
+
 	"github.com/gofiber/fiber/v2"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
 func Router(app *fiber.App, config *Config) {
@@ -12,12 +15,15 @@ func Router(app *fiber.App, config *Config) {
 		apiController = NewController(redisModel)
 	)
 
-	app.Get("/:key", apiController.GetContent)
-
 	api := app.Group("/api")
 	api.Get("/healthcheck", apiController.HealthCheck)
 
 	routerV1(api, apiController)
+
+	// Swagger UI route - moved to root level
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+
+	app.Get("/:key", apiController.GetContent)
 }
 
 func routerV1(app fiber.Router, controller Controller) {
