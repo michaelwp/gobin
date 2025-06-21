@@ -13,3 +13,7 @@ lint:
 .PHONY: lint-fix
 lint-fix:
 	golangci-lint run --fix
+
+.PHONY: swag-init
+swag-init:
+	swag init -g ./cmd/main.go -d . -o ./docs
