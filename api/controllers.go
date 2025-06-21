@@ -2,11 +2,12 @@ package api
 
 import (
 	"context"
-	"github.com/gofiber/fiber/v2"
 	"github/michaelwp/gobin/model"
 	"github/michaelwp/gobin/pkg/uuid"
 	"log"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type AddRequest struct {
@@ -94,6 +95,7 @@ func (r controller) AddNewContent(c *fiber.Ctx) error {
 		Data:    map[string]interface{}{"key": redisKey},
 	})
 }
+
 func (r controller) GetContent(c *fiber.Ctx) error {
 	log.Println("key:", c.Params("key"))
 
@@ -142,5 +144,5 @@ func parseExpirationDuration(expiration string) (time.Duration, error) {
 		return 0, err
 	}
 
-	return expirationTime.Sub(time.Now()), nil
+	return time.Until(expirationTime), nil
 }
