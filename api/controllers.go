@@ -66,7 +66,7 @@ func (r controller) HealthCheck(c *fiber.Ctx) error {
 // @Success 200 {object} Response
 // @Failure 400 {object} Response
 // @Failure 500 {object} Response
-// @Router /v1/add [post]
+// @Router /v1/pastes/add [post]
 func (r controller) AddNewContent(c *fiber.Ctx) error {
 	request := new(AddRequest)
 	if err := c.BodyParser(request); err != nil {
@@ -129,7 +129,7 @@ func (r controller) AddNewContent(c *fiber.Ctx) error {
 // @Success 200 {object} Response
 // @Failure 404 {object} Response
 // @Failure 500 {object} Response
-// @Router /{key} [get]
+// @Router /v1/pastes/{key} [get]
 func (r controller) GetContent(c *fiber.Ctx) error {
 	log.Println("key:", c.Params("key"))
 
