@@ -2,7 +2,6 @@ package model
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -29,8 +28,6 @@ func NewRedisModel(client *redis.Client) RedisModel {
 }
 
 func (r redisModel) Add(ctx context.Context, data *RedisData) error {
-	log.Println("data:", data)
-
 	return r.RedisClient.Set(ctx, data.Key, data.Value, data.Expiration).Err()
 }
 

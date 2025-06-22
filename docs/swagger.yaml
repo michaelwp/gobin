@@ -1,4 +1,4 @@
-basePath: /
+basePath: /api
 definitions:
   api.AddRequest:
     description: Request body for adding new content
@@ -31,7 +31,22 @@ info:
   title: Gobin API
   version: "1.0"
 paths:
-  /{key}:
+  /healthcheck:
+    get:
+      consumes:
+      - application/json
+      description: Check if the API is running and healthy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Health check
+      tags:
+      - health
+  /v1/pastes/{key}:
     get:
       consumes:
       - application/json
@@ -60,22 +75,7 @@ paths:
       summary: Get content
       tags:
       - paste
-  /healthcheck:
-    get:
-      consumes:
-      - application/json
-      description: Check if the API is running and healthy
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/api.Response'
-      summary: Health check
-      tags:
-      - health
-  /v1/add:
+  /v1/pastes/add:
     post:
       consumes:
       - application/json

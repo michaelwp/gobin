@@ -22,11 +22,10 @@ func Router(app *fiber.App, config *Config) {
 
 	// Swagger UI route - moved to root level
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
-
-	app.Get("/:key", apiController.GetContent)
 }
 
 func routerV1(app fiber.Router, controller Controller) {
 	v1 := app.Group("/v1")
-	v1.Post("/add", controller.AddNewContent)
+	v1.Post("/pastes/add", controller.AddNewContent)
+	v1.Get("/pastes/:key", controller.GetContent)
 }

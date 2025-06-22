@@ -21,3 +21,4 @@ swag-init:
 .PHONY: run-dev
 run-dev:
 	air -c ./configs/.air.toml
+	cd ./web && npm run dev

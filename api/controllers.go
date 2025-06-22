@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"github/michaelwp/gobin/model"
 	"github/michaelwp/gobin/pkg/uuid"
 	"log"
@@ -66,7 +67,7 @@ func (r controller) HealthCheck(c *fiber.Ctx) error {
 // @Success 200 {object} Response
 // @Failure 400 {object} Response
 // @Failure 500 {object} Response
-// @Router /v1/add [post]
+// @Router /v1/pastes/add [post]
 func (r controller) AddNewContent(c *fiber.Ctx) error {
 	request := new(AddRequest)
 	if err := c.BodyParser(request); err != nil {
@@ -94,7 +95,7 @@ func (r controller) AddNewContent(c *fiber.Ctx) error {
 
 		return c.Status(fiber.StatusInternalServerError).JSON(&Response{
 			Status:  "error",
-			Message: "error on parsing expiration duration",
+			Message: "please check the expiration date",
 		})
 	}
 
@@ -129,10 +130,8 @@ func (r controller) AddNewContent(c *fiber.Ctx) error {
 // @Success 200 {object} Response
 // @Failure 404 {object} Response
 // @Failure 500 {object} Response
-// @Router /{key} [get]
+// @Router /v1/pastes/{key} [get]
 func (r controller) GetContent(c *fiber.Ctx) error {
-	log.Println("key:", c.Params("key"))
-
 	content, err := r.redisModel.Get(c.Context(), c.Params("key"))
 	if err != nil {
 		log.Println("error on get content:", err)
@@ -158,7 +157,7 @@ func (r controller) generateRedisKey(ctx context.Context) (string, error) {
 	)
 
 	for exists {
-		redisKey, err = uuid.GenerateUUID(4)
+		redisKey, err = uuid.GenerateUUID(8)
 		if err != nil {
 			return "", err
 		}
@@ -176,6 +175,12 @@ func parseExpirationDuration(expiration string) (time.Duration, error) {
 	expirationTime, err := time.Parse("2006-01-02", expiration)
 	if err != nil {
 		return 0, err
+	}
+
+	duration := time.Until(expirationTime)
+
+	if duration < 0 {
+		return 0, errors.New("expiration time is in the past")
 	}
 
 	return time.Until(expirationTime), nil

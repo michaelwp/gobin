@@ -47,7 +47,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/add": {
+        "/v1/pastes/add": {
             "post": {
                 "description": "Create a new paste with the provided content and expiration date",
                 "consumes": [
@@ -93,7 +93,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{key}": {
+        "/v1/pastes/{key}": {
             "get": {
                 "description": "Retrieve content by its unique key",
                 "consumes": [

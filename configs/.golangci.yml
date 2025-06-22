@@ -29,6 +29,8 @@ issues:
     - third_party/
     - generated/
     - mock/
+    - web/
+    - docs/
     - .git/
 
   exclude-files:

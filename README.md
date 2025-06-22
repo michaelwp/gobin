@@ -55,7 +55,7 @@ Once your application is running, you can access the interactive API documentati
 - **Response**: Returns a success message with status 200
 
 #### Create New Paste
-- **POST** `/api/v1/add`
+- **POST** `/api/v1/pastes/add`
 - **Description**: Create a new paste with the provided content and expiration date
 - **Content-Type**: `application/json`
 - **Request Body**:
@@ -72,7 +72,7 @@ Once your application is running, you can access the interactive API documentati
   - `500`: Internal server error
 
 #### Retrieve Content
-- **GET** `/{key}`
+- **GET** `/api/v1/pastes/{key}`
 - **Description**: Retrieve content by its unique key
 - **Parameters**:
   - `key` (path, required): The unique identifier for the paste
@@ -105,7 +105,7 @@ Once your application is running, you can access the interactive API documentati
 
 #### Create a new paste
 ```bash
-curl -X POST http://localhost:8080/api/v1/add \
+curl -X POST http://localhost:8080/api/v1/pastes/add \
   -H "Content-Type: application/json" \
   -d '{
     "content": "Hello, World! This is my first paste.",
@@ -126,7 +126,7 @@ curl -X POST http://localhost:8080/api/v1/add \
 
 #### Retrieve content
 ```bash
-curl http://localhost:8080/abc123
+curl http://localhost:8080/api/v1/pastes/abc123
 ```
 
 **Response**:
