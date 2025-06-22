@@ -1,23 +1,50 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './App.css'
+
+interface Notification {
+  message: string;
+  type: 'success' | 'error';
+  key?: string;
+}
 
 function App() {
   const [loading, setLoading] = useState(false)
   const [paste, setPaste] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [successKey, setSuccessKey] = useState<string | null>(null)
+  const [notification, setNotification] = useState<Notification | null>(null)
+  const [countdown, setCountdown] = useState(0)
+
   const [keyCopyStatus, setKeyCopyStatus] = useState('Copy')
   const [contentCopyStatus, setContentCopyStatus] = useState('Copy')
+
+  const notificationTimeoutRef = useRef<number | null>(null)
+  const countdownIntervalRef = useRef<number | null>(null)
 
   const [createContent, setCreateContent] = useState('')
   const [createExpires, setCreateExpires] = useState('')
   const [retrieveKey, setRetrieveKey] = useState('')
 
+  const clearNotification = () => {
+    if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current)
+    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current)
+    setNotification(null)
+    setCountdown(0)
+  }
+
+  const showNotification = (message: string, type: 'success' | 'error', key?: string) => {
+    clearNotification()
+    setNotification({ message, type, key })
+    setCountdown(60)
+
+    countdownIntervalRef.current = window.setInterval(() => {
+      setCountdown((prev) => prev - 1)
+    }, 1000)
+
+    notificationTimeoutRef.current = window.setTimeout(clearNotification, 60000)
+  }
+
   const handleCreatePaste = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
-    setSuccessKey(null)
     setKeyCopyStatus('Copy')
     try {
       const res = await fetch('/api/v1/pastes/add', {
@@ -27,14 +54,14 @@ function App() {
       })
       const data = await res.json()
       if (data.status === 'success') {
-        setSuccessKey(data.data.key)
+        showNotification('Paste created! Key:', 'success', data.data.key)
         setCreateContent('')
         setCreateExpires('')
       } else {
-        setError(data.message || 'Failed to create paste')
+        showNotification(data.message || 'Failed to create paste', 'error')
       }
     } catch (e) {
-      setError('Network error')
+      showNotification('Network error', 'error')
     } finally {
       setLoading(false)
     }
@@ -43,7 +70,6 @@ function App() {
   const handleFetchPaste = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
     setPaste(null)
     setContentCopyStatus('Copy')
     try {
@@ -51,19 +77,20 @@ function App() {
       const data = await res.json()
       if (res.ok && data.status === 'success') {
         setPaste(data.data.content)
+        clearNotification()
       } else {
-        setError('content not found')
+        showNotification('content not found', 'error')
       }
     } catch (e) {
-      setError('Network error')
+      showNotification('Network error', 'error')
     } finally {
       setLoading(false)
     }
   }
 
   const handleCopyKey = () => {
-    if (successKey) {
-      navigator.clipboard.writeText(successKey)
+    if (notification?.key) {
+      navigator.clipboard.writeText(notification.key)
       setKeyCopyStatus('Copied!')
       setTimeout(() => setKeyCopyStatus('Copy'), 2000)
     }
@@ -82,9 +109,36 @@ function App() {
     setRetrieveKey('')
   }
 
-  const handleCloseSuccess = () => {
-    setSuccessKey(null)
+  const handleClearCreate = () => {
+    setCreateContent('')
   }
+
+  const handlePasteFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText()
+      setCreateContent(text)
+    } catch (err) {
+      console.error('Failed to read clipboard contents: ', err)
+      // Handle potential error (e.g., user denies permission)
+    }
+  }
+
+  const handlePasteKeyFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText()
+      setRetrieveKey(text)
+    } catch (err) {
+      console.error('Failed to read clipboard contents: ', err)
+    }
+  }
+
+  const handleClearRetrieveKey = () => {
+    setRetrieveKey('')
+  }
+
+  useEffect(() => {
+    return clearNotification // Cleanup on unmount
+  }, [])
 
   return (
     <div className="container">
@@ -110,18 +164,22 @@ function App() {
         </a>
       </header>
 
-      {error && <div className="error-message">{error}</div>}
-      {successKey && (
-        <div className="success-message">
-          <span>
-            Paste created! Key:{' '}
-            <span className="success-key">{successKey}</span>
-          </span>
-          <div className="success-actions">
-            <button onClick={handleCopyKey} className="copy-btn">
-              {keyCopyStatus}
-            </button>
-            <button onClick={handleCloseSuccess} className="close-btn">
+      {notification && (
+        <div className={`notification ${notification.type}`}>
+          <div className="notification-content">
+            {notification.message}{' '}
+            {notification.type === 'success' && notification.key && (
+              <span className="success-key">{notification.key}</span>
+            )}
+          </div>
+          <div className="notification-actions">
+            <span className="countdown">({countdown}s)</span>
+            {notification.type === 'success' && (
+              <button onClick={handleCopyKey} className="copy-btn">
+                {keyCopyStatus}
+              </button>
+            )}
+            <button onClick={clearNotification} className="close-btn">
               &times;
             </button>
           </div>
@@ -132,13 +190,25 @@ function App() {
         {/* Create Panel */}
         <div className="panel">
           <form onSubmit={handleCreatePaste} className="panel-form">
-            <textarea
-              className="text-area"
-              placeholder="enter the text here"
-              value={createContent}
-              onChange={(e) => setCreateContent(e.target.value)}
-              required
-            />
+            <div className="display-area-wrapper">
+              <textarea
+                className="text-area"
+                placeholder="enter the text here"
+                value={createContent}
+                onChange={(e) => setCreateContent(e.target.value)}
+                required
+              />
+              <div className="floating-actions">
+                <button type="button" onClick={handlePasteFromClipboard} className="floating-btn">
+                  Paste
+                </button>
+                {createContent && (
+                  <button type="button" onClick={handleClearCreate} className="floating-btn">
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
             <input
               type="date"
               className="input-field"
@@ -155,32 +225,45 @@ function App() {
         {/* Retrieve Panel */}
         <div className="panel">
           <div className="panel-display">
-            <div className="text-display-area">
-              {paste ? (
-                <>
-                  <div className="floating-actions">
-                    <button onClick={handleCopyContent} className="floating-btn">
-                      {contentCopyStatus}
-                    </button>
-                    <button onClick={handleClearPaste} className="floating-btn">
-                      Clear
-                    </button>
-                  </div>
-                  <pre>{paste}</pre>
-                </>
-              ) : (
-                <span className="placeholder-text">the text will appeared here</span>
+            <div className="display-area-wrapper">
+              <textarea
+                readOnly
+                className="display-textarea"
+                value={paste || ''}
+                placeholder="the text will appeared here"
+              />
+              {paste && (
+                <div className="floating-actions">
+                  <button onClick={handleCopyContent} className="floating-btn">
+                    {contentCopyStatus}
+                  </button>
+                  <button onClick={handleClearPaste} className="floating-btn">
+                    Clear
+                  </button>
+                </div>
               )}
             </div>
             <form onSubmit={handleFetchPaste} className="retrieve-form">
-              <input
-                type="text"
-                className="input-field"
-                placeholder="enter the key here"
-                value={retrieveKey}
-                onChange={(e) => setRetrieveKey(e.target.value)}
-                required
-              />
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="enter the key here"
+                  value={retrieveKey}
+                  onChange={(e) => setRetrieveKey(e.target.value)}
+                  required
+                />
+                <div className="floating-actions-left">
+                  <button type="button" onClick={handlePasteKeyFromClipboard} className="floating-btn">
+                    Paste
+                  </button>
+                  {retrieveKey && (
+                    <button type="button" onClick={handleClearRetrieveKey} className="floating-btn">
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
               <button type="submit" className="btn" disabled={loading}>
                 {loading ? 'retrieving...' : 'retrieve'}
               </button>
