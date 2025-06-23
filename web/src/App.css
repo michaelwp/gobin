@@ -81,28 +81,36 @@ body, html, #root {
 .main-content {
   display: flex;
   gap: 1.5rem;
+  min-height: 400px; /* Ensure consistent minimum height */
 }
 
 .panel {
   flex: 1;
   border-radius: 12px;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .panel-form, .panel-display {
   display: flex;
   flex-direction: column;
   height: 100%;
+  gap: 1rem; /* Consistent spacing between elements */
 }
 
 .retrieve-form {
   margin-top: auto; /* Pushes the form to the bottom */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Consistent spacing */
 }
 
 .display-area-wrapper {
   position: relative;
   flex-grow: 1;
-  margin-bottom: 1rem;
+  min-height: 250px; /* Ensure consistent minimum height */
 }
 
 .display-textarea::placeholder {
@@ -123,9 +131,6 @@ body, html, #root {
   min-height: 250px;
   box-sizing: border-box;
   color: var(--text-color);
-}
-
-.text-area {
   resize: vertical;
 }
 
@@ -166,7 +171,6 @@ body, html, #root {
 .input-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 1rem;
 }
 
 .floating-actions-left {
@@ -180,6 +184,7 @@ body, html, #root {
 }
 
 .input-field {
+  height: 48px; /* Match button height */
   width: 100%;
   padding: 0.75rem;
   padding-left: 6.5rem; /* Make space for buttons */
@@ -187,6 +192,7 @@ body, html, #root {
   border-radius: 8px;
   box-sizing: border-box; /* Ensures padding doesn't affect width */
   text-align: center;
+  font-size: 1rem;
 }
 
 .input-field:focus {
@@ -202,20 +208,22 @@ body, html, #root {
 .btn {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--primary-color);
-  border-radius: 8px;
   background-color: var(--primary-color);
-  color: #fff;
+  color: white;
+  border: none;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  box-sizing: border-box;
   transition: background-color 0.2s;
+  height: 48px; /* Ensure consistent button height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn:hover:not(:disabled) {
-    background-color: var(--primary-color-dark);
-    border-color: var(--primary-color-dark);
+  background-color: var(--primary-color-dark);
 }
 
 .btn:disabled {
@@ -308,44 +316,67 @@ body, html, #root {
 @media (max-width: 768px) {
   .main-content {
     flex-direction: column;
+    gap: 1rem;
   }
+
   .container {
     width: 95%;
     margin: 1rem auto;
-    padding: 1.5rem;
+    padding: 1rem;
   }
+
   .title {
     font-size: 2rem;
+  }
+
+  .panel {
+    min-height: 300px; /* Ensure minimum height on mobile */
+  }
+
+  .display-area-wrapper {
+    min-height: 200px; /* Smaller minimum height on mobile */
+  }
+
+  .text-area,
+  .display-textarea {
+    min-height: 200px; /* Smaller minimum height on mobile */
   }
 }
 
 /* Mobile phones */
 @media (max-width: 480px) {
   body, html, #root {
-      font-size: 14px;
+    font-size: 14px;
   }
 
   .container {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 1rem;
-    border: none;
-    border-radius: 0;
-    background: #fff;
+    width: 98%;
+    margin: 0.5rem auto;
+    padding: 0.75rem;
+    border-radius: 12px;
   }
 
   .header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .title {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
   }
 
   .panel {
     padding: 0.75rem;
-    border: none;
+    min-height: 250px;
+  }
+
+  .main-content {
+    gap: 0.75rem;
+  }
+
+  .btn,
+  .input-field {
+    height: 44px; /* Slightly smaller on very small screens */
+    font-size: 0.9rem;
   }
 }
 
@@ -353,4 +384,17 @@ body, html, #root {
   text-align: center;
   margin-top: 2rem;
   color: var(--placeholder-color);
+}
+
+/* Ensure consistent panel heights and alignment */
+.panel-form > .display-area-wrapper,
+.panel-display > .display-area-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-form > .retrieve-form,
+.panel-display > .retrieve-form {
+  flex-shrink: 0;
 }

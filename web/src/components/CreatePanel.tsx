@@ -20,10 +20,7 @@ const CreatePanel: React.FC = () => {
 
   return (
     <div className="panel">
-      <form
-        onSubmit={handleSubmit}
-        className="panel-form"
-      >
+      <div className="panel-form">
         <div className="display-area-wrapper">
           <textarea
             className="text-area"
@@ -51,17 +48,22 @@ const CreatePanel: React.FC = () => {
             )}
           </div>
         </div>
-        <input
-          type="date"
-          className="input-field"
-          value={createExpires}
-          onChange={(e) => setCreateExpires(e.target.value)}
-          required
-        />
-        <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'creating...' : 'create'}
-        </button>
-      </form>
+        <form
+          onSubmit={handleSubmit}
+          className="retrieve-form"
+        >
+          <input
+            type="date"
+            className="input-field"
+            value={createExpires}
+            onChange={(e) => setCreateExpires(e.target.value)}
+            required
+          />
+          <button type="submit" className="btn" disabled={loading}>
+            {loading ? 'creating...' : 'create'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
