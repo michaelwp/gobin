@@ -1,5 +1,5 @@
-.PHONY: build
-build:
+.PHONY: build-be
+build-be:
 	go build -o ./bin/gobin ./cmd/main.go
 
 .PHONY: run
@@ -31,3 +31,12 @@ run-be:
 .PHONY: run-client
 run-client:
 	cd ./web && npm run dev
+
+.PHONE: build
+build:
+	make build-be build-fe -j
+
+
+.PHONE: build-fe
+build-fe:
+	cd ./web && npm run build

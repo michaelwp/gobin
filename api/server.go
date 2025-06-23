@@ -12,6 +12,7 @@ type Config struct {
 
 func Server(config *Config) error {
 	app := fiber.New()
+	app.Static("/", "./web/dist")
 	Router(app, config)
 	return app.Listen(config.Port)
 }
