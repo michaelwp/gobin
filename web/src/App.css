@@ -16,6 +16,22 @@
   --error-border: #fca5a5;
 }
 
+.dark {
+  --background-color: #23272f;
+  --text-color: #f3f4f6;
+  --primary-color: #1a1d23;
+  --primary-color-dark: #111217;
+  --link-color: #7ab7ff;
+  --text-area-bg: #23272f;
+  --border-color: #374151;
+  --success-bg: #1e3a2a;
+  --success-text: #bbf7d0;
+  --success-border: #22c55e;
+  --error-bg: #7f1d1d;
+  --error-text: #fee2e2;
+  --error-border: #fca5a5;
+}
+
 body, html, #root {
   height: 100%;
   margin: 0;
@@ -38,6 +54,7 @@ body, html, #root {
   border-radius: 16px;
   box-sizing: border-box;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 .header {
@@ -397,4 +414,38 @@ body, html, #root {
 .panel-form > .retrieve-form,
 .panel-display > .retrieve-form {
   flex-shrink: 0;
+}
+
+.dark-toggle-btn {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  z-index: 1000;
+  background: var(--background-color, #fff);
+  color: var(--text-color, #222);
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.dark-toggle-btn:active, .dark .dark-toggle-btn {
+  background: var(--primary-color, #23272f);
+  color: #ffe066;
+  border-color: var(--link-color, #7ab7ff);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.dark .dark-toggle-btn {
+  background: #23272f;
+  color: #ffe066;
+  border-color: #7ab7ff;
 }
