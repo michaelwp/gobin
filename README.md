@@ -7,6 +7,7 @@
 - Minimal and user-friendly interface
 - Fast and lightweight
 - RESTful API with comprehensive documentation
+- **Direct URL access**: Access pastes directly via URL (e.g., `http://localhost:8080/{key}`)
 
 ## Getting Started
 
@@ -157,6 +158,29 @@ curl http://localhost:8080/api/healthcheck
 - Open your browser and navigate to the app's URL (e.g., `http://localhost:8080`).
 - Paste your text or code and submit to get a shareable link.
 - Use the Swagger UI to explore and test the API endpoints.
+
+## Direct URL Access
+
+One of the key features of gobin is the ability to access pastes directly via URL. This makes sharing content extremely simple:
+
+### How it works
+1. **Create a paste** using the web interface or API
+2. **Get the key** (e.g., `abc123`)
+3. **Share the direct URL**: `http://localhost:8080/abc123`
+
+### Benefits
+- **No need to copy/paste keys**: Just share the URL directly
+- **Bookmarkable**: Users can bookmark paste URLs for later access
+- **Clean URLs**: Simple, readable URLs without query parameters
+- **Mobile-friendly**: Works seamlessly on mobile devices
+
+### Example
+1. Create a paste with content "Hello World"
+2. Receive key: `xyz789`
+3. Share URL: `http://localhost:8080/xyz789`
+4. Anyone with the URL can access the content directly
+
+The web interface also shows the direct URL when you retrieve a paste, making it easy to copy and share.
 
 ## License
 MIT

@@ -445,7 +445,90 @@ body, html, #root {
 }
 
 .dark .dark-toggle-btn {
-  background: #23272f;
-  color: #ffe066;
-  border-color: #7ab7ff;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+/* KeyRoute specific styles */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.loading-spinner {
+  font-size: 1.2rem;
+  color: var(--link-color);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.key-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--text-area-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.key-info p {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.key-info strong {
+  color: var(--link-color);
+  font-weight: 600;
+}
+
+.direct-url-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.direct-url-info p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--success-text);
+}
+
+.direct-url-info strong {
+  color: var(--link-color);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+/* Notification key and URL styling */
+.notification-key {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 1.1em;
+  background-color: rgba(57, 62, 70, 0.1);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+.notification-url {
+  color: var(--link-color);
+  font-weight: 600;
+  font-size: 0.95em;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.dark .notification-key {
+  color: #7ab7ff;
+  background-color: rgba(122, 183, 255, 0.1);
 }

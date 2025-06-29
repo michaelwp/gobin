@@ -15,6 +15,17 @@ const RetrievePanel: React.FC = () => {
     handleClearRetrieveKey,
   } = useAppStore();
 
+  const getDirectUrl = (key: string) => {
+    return `${window.location.origin}/${key}`;
+  };
+
+  const copyDirectUrl = (key: string) => {
+    const url = getDirectUrl(key);
+    navigator.clipboard.writeText(url).catch((err) => {
+      console.error('Could not copy URL: ', err);
+    });
+  };
+
   return (
     <div className="panel">
       <div className="panel-display">
@@ -36,6 +47,17 @@ const RetrievePanel: React.FC = () => {
             </div>
           )}
         </div>
+        {paste && retrieveKey && (
+          <div className="direct-url-info">
+            <p>Direct URL: <strong>{getDirectUrl(retrieveKey)}</strong></p>
+            <button
+              onClick={() => copyDirectUrl(retrieveKey)}
+              className="floating-btn"
+            >
+              Copy URL
+            </button>
+          </div>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();

@@ -4,14 +4,17 @@ import Header from './components/Header'
 import Notification from './components/Notification'
 import CreatePanel from './components/CreatePanel'
 import RetrievePanel from './components/RetrievePanel'
+import KeyRoute from './components/KeyRoute'
 import Footer from './components/Footer'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 
 function App() {
   const notification = useAppStore((state) => state.notification)
   const countdown = useAppStore((state) => state.countdown)
   const keyCopyStatus = useAppStore((state) => state.keyCopyStatus)
   const handleCopyKey = useAppStore((state) => state.handleCopyKey)
+  const handleCopyUrl = useAppStore((state) => state.handleCopyUrl)
   const clearNotification = useAppStore((state) => state.clearNotification)
 
   // Dark mode state
@@ -51,14 +54,20 @@ function App() {
             successKey={notification.key}
             keyCopyStatus={keyCopyStatus}
             onCopyKey={handleCopyKey}
+            onCopyUrl={handleCopyUrl}
             onClose={clearNotification}
           />
         )}
 
-        <main className="main-content">
-          <CreatePanel />
-          <RetrievePanel />
-        </main>
+        <Routes>
+          <Route path="/" element={
+            <main className="main-content">
+              <CreatePanel />
+              <RetrievePanel />
+            </main>
+          } />
+          <Route path="/:key" element={<KeyRoute />} />
+        </Routes>
 
         <Footer />
       </div>
