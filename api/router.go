@@ -22,6 +22,11 @@ func Router(app *fiber.App, config *Config) {
 
 	// Swagger UI route - moved to root level
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+
+	// Fallback route for client-side routing
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile("./web/dist/index.html")
+	})
 }
 
 func routerV1(app fiber.Router, controller Controller) {

@@ -36,7 +36,9 @@ interface AppState {
   clearNotification: () => void;
   handleCreatePaste: () => Promise<void>;
   handleFetchPaste: () => Promise<void>;
+  handleFetchPasteByKey: (key: string) => Promise<void>;
   handleCopyKey: () => void;
+  handleCopyUrl: () => void;
   handleCopyContent: () => void;
   handleClearPaste: () => void;
   handleClearCreate: () => void;
@@ -98,7 +100,10 @@ const useAppStore = create<AppState>((set, get) => {
         });
         const data = (await res.json()) as ApiResponse;
         if (data.status === 'success') {
-          showNotification('Paste created! Key:', 'success', data.data?.key);
+          const key = data.data?.key;
+          const directUrl = key ? `${window.location.origin}/${key}` : '';
+          const message = key ? `Paste created! Key: ${key}, or direct url: ${directUrl}` : 'Paste created!';
+          showNotification(message, 'success', key);
           set({ createContent: '', createExpires: '' });
         } else {
           showNotification(data.message || 'Failed to create paste', 'error');
@@ -131,12 +136,44 @@ const useAppStore = create<AppState>((set, get) => {
       }
     },
 
+    handleFetchPasteByKey: async (key: string) => {
+      set({ loading: true, paste: null, contentCopyStatus: 'Copy' });
+      const { showNotification } = get();
+      try {
+        const res = await fetch(`/api/v1/pastes/${key}`);
+        const data = (await res.json()) as ApiResponse;
+        if (res.ok && data.status === 'success') {
+          set({ paste: data.data?.content ?? null });
+          clearNotification();
+        } else {
+          showNotification('content not found', 'error');
+        }
+      } catch (error) {
+        console.error('Fetch paste error:', error);
+        showNotification('Network error', 'error');
+      } finally {
+        set({ loading: false });
+      }
+    },
+
     // --- UI ACTIONS ---
     handleCopyKey: () => {
       const { notification } = get();
       if (notification?.key) {
         navigator.clipboard.writeText(notification.key).catch((err) => {
           console.error('Could not copy key: ', err);
+        });
+        set({ keyCopyStatus: 'Copied!' });
+        setTimeout(() => set({ keyCopyStatus: 'Copy' }), 2000);
+      }
+    },
+
+    handleCopyUrl: () => {
+      const { notification } = get();
+      if (notification?.key) {
+        const directUrl = `${window.location.origin}/${notification.key}`;
+        navigator.clipboard.writeText(directUrl).catch((err) => {
+          console.error('Could not copy direct URL: ', err);
         });
         set({ keyCopyStatus: 'Copied!' });
         setTimeout(() => set({ keyCopyStatus: 'Copy' }), 2000);

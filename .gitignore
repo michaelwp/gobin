@@ -35,5 +35,6 @@ tmp
 vendor
 go.sum
 bin
+gobin
 
 nodemodules
